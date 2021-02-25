@@ -1,6 +1,6 @@
 {
   "name": "cdtickets",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Easy to use ticket package for Discord.js bots",
   "main": "src/index.js",
   "scripts": {
