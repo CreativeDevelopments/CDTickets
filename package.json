@@ -1,0 +1,29 @@
+{
+  "name": "cdtickets",
+  "version": "1.0.0",
+  "description": "Easy to use ticket module using MongoDB and Discord.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Exxonnnnnn/CDTickets.git"
+  },
+  "keywords": [
+    "discord.js",
+    "mongodb",
+    "tickets"
+  ],
+  "author": "Exxon#0293",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Exxonnnnnn/CDTickets/issues"
+  },
+  "homepage": "https://github.com/Exxonnnnnn/CDTickets#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "discord.js": "^12.5.1",
+    "mongoose": "^5.11.15"
+  }
+}
