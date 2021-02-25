@@ -72,4 +72,8 @@ ticket.remove({
     user: 'User' // message.mentions.members.first() || message.guild.members.cache.get(args[argNumber])
 })
 ```
+<br></br>
+
+# Other
+If you have any questions, suggestions or need helping setting it up join our [Support Server](https://discord.gg/jUNbV5u). 
 
