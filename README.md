@@ -1,4 +1,9 @@
-<center><a href="https://www.npmjs.com/package/cdtickets"><img src ="https://nodei.co/npm/cdtickets.png"></a></center>
+<div style="text-align:center"><a href="https://discord.gg/jUNbV5u"><img src="./cdtickets.png"></a></div>
+
+<br></br>
+
+<div style="text-align:center"><a href="https://www.npmjs.com/package/cdtickets"><img src ="https://nodei.co/npm/cdtickets.png"></a></div>
+
 <br></br>
 
 # Installation
@@ -21,7 +26,7 @@ ticket.create({
     supportRole: 'Role', // message.mentions.roles.first() || message.guild.cache.roles.get(args[argNumber])
     category: 'Category ID', // If no category is set it will just make a channel at the top of the server
     response: 'Response', // This message is sent when they open the ticket - Defaults to "Your ticket has successfully been created in #channel
-    reason: 'Reason for opening the ticket' // Defaults to "No reason provided"
+    reason: 'Reason for opening the ticket', // Defaults to "No reason provided"
     message: 'Message', // This message is sent when the ticket is opened, will also ping the user and the support role
 })
 ```
