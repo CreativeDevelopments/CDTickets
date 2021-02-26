@@ -2,7 +2,27 @@
 
 <br></br>
 
-<div style="text-align:center"><a href="https://www.npmjs.com/package/cdtickets"><img src ="https://nodei.co/npm/cdtickets.png"></a></div>
+<div style="text-align:center">
+<a href="https://discord.com/invite/jUNbV5u"><img src="https://img.shields.io/discord/769710808435261490.svg"></a>
+<a href="https://www.npmjs.com/package/cdtickets"><img src="https://img.shields.io/npm/dt/cdtickets.svg"></a>
+<a href="https://www.npmjs.com/package/cdtickets"><img src="https://img.shields.io/npm/dm/cdtickets.svg?style=color=blue"></a>
+<a href="https://www.npmjs.com/package/cdtickets"><img src="https://img.shields.io/npm/v/cdtickets.svg?style=color=blue"></a>
+<a href="https://github.com/CreativeDevelopments/CDTickets"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square"></a>
+</div>
+
+<br></br>
+
+# Contents
+- [Installation](#installation)
+- [Setup](#setup)
+    - [Creating a new ticket](##create-a-ticket)
+    - [Deleting a ticket](##delete-a-ticket)
+    - [Claim a ticket](##claim-a-ticket)
+    - [Unclaim a ticket](##unclaim-a-ticket)
+    - [Rename a ticket](##rename-a-ticket)
+    - [Add a member](##add-a-member-to-a-ticket)
+    - [Remove a member](##remove-a-member-from-a-ticket)
+- [Other](#other)
 
 <br></br>
 
