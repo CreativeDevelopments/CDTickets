@@ -15,13 +15,13 @@
 # Contents
 - [Installation](#installation)
 - [Setup](#setup)
-    - [Creating a new ticket](##create-a-ticket)
-    - [Deleting a ticket](##delete-a-ticket)
-    - [Claim a ticket](##claim-a-ticket)
-    - [Unclaim a ticket](##unclaim-a-ticket)
-    - [Rename a ticket](##rename-a-ticket)
-    - [Add a member](##add-a-member-to-a-ticket)
-    - [Remove a member](##remove-a-member-from-a-ticket)
+    - [Creating a new ticket](#create-a-ticket)
+    - [Deleting a ticket](#delete-a-ticket)
+    - [Claim a ticket](#claim-a-ticket)
+    - [Unclaim a ticket](#unclaim-a-ticket)
+    - [Rename a ticket](#rename-a-ticket)
+    - [Add a member](#add-a-member-to-a-ticket)
+    - [Remove a member](#remove-a-member-from-a-ticket)
 - [Other](#other)
 
 <br></br>
