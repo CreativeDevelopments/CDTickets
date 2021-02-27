@@ -3,220 +3,225 @@
  *   All rights reserved.
  */
 
- const colors = require('colors');
- const { MessageEmbed } = require('discord.js');
+const colors = require('colors');
+const { MessageEmbed } = require('discord.js');
 
 class CDTickets {
-    test({ msg}) {
-        return msg.reply('hi')
-    }
 
-    // Create a ticket
-     async create({ msg, name, supportRole, category, response, reason, message }) {
-        if (!msg) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid message'));
+   // Create a ticket
+    async create({ msg, name, supportRole, category, response, reason, message }) {
+       if (!msg) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid message'));
 
-        if (!name) name = `${msg.author.username}`;
+       if (!name) name = `${msg.author.username}`;
 
-        if (!supportRole) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid support role'));
-        let role = msg.guild.roles.cache.find(r => r.name === supportRole) || msg.guild.roles.cache.get(supportRole);
-        if (!role) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid role'));
+       if (!supportRole) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid support role'));
 
-        if (category) {
-            let cat = msg.guild.channels.cache.find(ch => ch.name === category) || msg.guild.channels.cache.get(category)
-            if (!cat) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid category'))
-            if (cat.type !== 'category') console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' The category given is not a category'))
-        };
+       let role = msg.guild.roles.cache.find(r => r.name === supportRole) || msg.guild.roles.cache.get(supportRole);
+       if (!role) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid role'));
 
-        if (!reason) reason = 'No reason provided';
+       if (!reason) reason = 'No reason provided';
 
-        if (!message) message = `${msg.author} Welcome to your ticket!`
+       if (!message) message = `${msg.author} Welcome to your ticket!`
 
-        msg.guild.channels.create(name, { type: 'text', reason: `Opening ticket for ${msg.author.tag}`}).then(chan => {
-            chan.updateOverwrite(msg.author, {
-                VIEW_CHANNEL: true,
-                SEND_MESSAGES: true,
-                READ_MESSAGES: true,
-                ATTACH_FILE: true,
-                EMBED_LINKS: true,
-                READ_MESSAGE_HISTORY: true,
-            }, `Opening ticket for ${msg.author.tag}`)
-            chan.updateOverwrite(role, {
-                VIEW_CHANNEL: true,
-                SEND_MESSAGES: true,
-                READ_MESSAGES: true,
-                ATTACH_FILE: true,
-                EMBED_LINKS: true,
-                READ_MESSAGE_HISTORY: true,
-            }, `Opening ticket for ${msg.author.tag}`)
-            chan.updateOverwrite(msg.guild.id, {
-                VIEW_CHANNEL: false,
-                READ_MESSAGES: false,
-            }, `Opening ticket for ${msg.author.tag}`)
-            .then(() => chan.setTopic(`Ticket Owner -> ${msg.author.tag} | Reason -> ${reason}`, `Opening ticket for ${msg.author.tag}`))
+       const chan = await msg.guild.channels.create(name, {
+           type: 'text',
+           reason: `Opening ticket for ${msg.author.tag}`,
+           topic: `Ticket owner --> ${msg.author.tag} | Reason --> ${reason}`,
+           permissionOverwrites: [
+               {
+                   id: msg.author.id,
+                   allow: 117760
+               }, {
+                   id: role.id,
+                   allow: 117760
+               }, {
+                   id: msg.guild.id,
+                   deny: 1024
+               }
+           ]
+       })
+       
+       if (category) {
+           let cat = msg.guild.channels.cache.find(ch => ch.name === category) || msg.guild.channels.cache.get(category);
 
-            if (category) {
-                let cat = msg.guild.channels.cache.find(ch => ch.name === category) || msg.guild.channels.cache.get(category);
+           if (!cat) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid category'));
+           if (cat.type !== 'category') console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' The category given is not a category'));
 
-                if (!cat) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid category'));
-                if (cat.type !== 'category') console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' The category given is not a category'));
+           chan.setParent(cat.id, { lockPermissions: false, reason: `Opening ticket for ${msg.author.tag}` });
+       };
 
-                chan.setParent(cat.id, { lockPermissions: false, reason: `Opening ticket for ${msg.author.tag}` });
-            };
+       const chanEmbed = new MessageEmbed()
+       .setColor('#00DCFF')
+       .setDescription(`${message}\n\nReason: ${reason}`)
+       chan.send(`${role} ${msg.author}`, chanEmbed).catch(err => chan.send(`${role} ${msg.author}`, `${message}\n\nReason: ${reason}`))
 
-            const chanEmbed = new MessageEmbed()
-            .setColor('#00DCFF')
-            .setDescription(`${message}\n\nReason: ${reason}`)
-            chan.send(`${role} ${msg.author}`, chanEmbed).catch(err => chan.send(`${role} ${msg.author}`, `${message}\n\nReason: ${reason}`))
+       if (!response) response = `${msg.author}, Your ticket has successfully been created in ${chan}`
 
-            if (!response) response = `${msg.author}, Your ticket has successfully been created in ${chan}`
+       msg.delete()
 
-            msg.delete()
+       const embed = new MessageEmbed()
+       .setColor('#2FDD2C')
+       .setDescription(`${response}`)
+       msg.channel.send(embed).catch(err => msg.channel.send(`${response}`))
+       
+   }
 
-            const embed = new MessageEmbed()
-            .setColor('#2FDD2C')
-            .setDescription(`${response}`)
-            msg.channel.send(embed).catch(err => msg.channel.send(`${response}`))
-        })
-    }
+   // Delete a ticket
+   delete({ msg}) {
+       if (!msg) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
 
-    // Delete a ticket
-    delete({ msg }) {
-        if (!msg) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
+       const embed = new MessageEmbed()
+       .setColor('#C93131')
+       .setDescription('Deleting the ticket...')
 
-        const embed = new MessageEmbed()
-        .setColor('#C93131')
-        .setDescription('Deleting the ticket...')
+       msg.delete()
 
-        msg.delete()
+       msg.channel.send(embed).catch(err => msg.channel.send(`Deleting the ticket...`))
+       .then(m => m.channel.delete({ reason: `Closing ticket ${msg.channel.name}`}))
+   }
 
-        msg.channel.send(embed).catch(err => msg.channel.send(`Deleting the ticket...`))
-        .then(m => m.channel.delete({ reason: `Closing ticket ${msg.channel.name}`}))
-    }
+   //Claim a ticket
+   claim({ msg, supportRole }) {
+       if (!msg) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
+       
+       if (!supportRole) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Role'))
 
-    //Claim a ticket
-    claim({ msg, supportRole }) {
-        if (!msg) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
-        
-        if (!supportRole) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Role'))
-        let role = msg.guild.roles.cache.find(r => r.name === supportRole) || msg.guild.roles.cache.get(supportRole);
-        if (!role) console.log(`${colors.brightRED('[ERROR]')}`.white + colors.white(' Invalid role'));
+       let role = msg.guild.roles.cache.find(r => r.name === supportRole) || msg.guild.roles.cache.get(supportRole);
+       if (!role) 
+           return console.log(`${colors.brightRED('[ERROR]')}`.white + colors.white(' Invalid role'));
 
-        msg.channel.updateOverwrite(role, {
-            VIEW_CHANNEL: false,
-            SEND_MESSAGES: false,
-            READ_MESSAGES: false,
-            ATTACH_FILE: false,
-            EMBED_LINKS: false,
-            READ_MESSAGE_HISTORY: false,
-        }, `Claiming ticket for ${msg.author.tag}`)
-        msg.channel.updateOverwrite(msg.author, {
-            VIEW_CHANNEL: true,
-            SEND_MESSAGES: true,
-            READ_MESSAGES: true,
-            ATTACH_FILE: true,
-            EMBED_LINKS: true,
-            READ_MESSAGE_HISTORY: true,
-        }, `Claiming ticket for ${msg.author.tag}`)
+       msg.channel.updateOverwrite(role, {
+           VIEW_CHANNEL: false,
+           SEND_MESSAGES: false,
+           READ_MESSAGES: false,
+           ATTACH_FILE: false,
+           EMBED_LINKS: false,
+           READ_MESSAGE_HISTORY: false,
+       }, `Claiming ticket for ${msg.author.tag}`)
+       msg.channel.updateOverwrite(msg.author, {
+           VIEW_CHANNEL: true,
+           SEND_MESSAGES: true,
+           READ_MESSAGES: true,
+           ATTACH_FILE: true,
+           EMBED_LINKS: true,
+           READ_MESSAGE_HISTORY: true,
+       }, `Claiming ticket for ${msg.author.tag}`)
 
-        const embed = new MessageEmbed()
-        .setColor('#2FDD2C')
-        .setDescription(`You have successfully claimed the ticket ${msg.channel}`)
+       const embed = new MessageEmbed()
+       .setColor('#2FDD2C')
+       .setDescription(`You have successfully claimed the ticket ${msg.channel}`)
 
-        msg.delete()
-        msg.channel.send(embed).catch(err => message.channel.send(`You have successfully claimed hte ticket ${msg.channel}`))
-    }
+       msg.delete()
+       msg.channel.send(embed).catch(err => message.channel.send(`You have successfully claimed hte ticket ${msg.channel}`))
+   }
 
-    //Remove a claim
-    unclaim({ msg, supportRole }) {
-        if (!msg) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
-        
-        if (!supportRole) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Role'))
-        let role = msg.guild.roles.cache.find(r => r.name === supportRole) || msg.guild.roles.cache.get(supportRole);
-        if (!role) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid role'));
-        
-        msg.channel.updateOverwrite(msg.author, {
-            VIEW_CHANNEL: false,
-            SEND_MESSAGES: false,
-            READ_MESSAGES: false,
-            ATTACH_FILE: false,
-            EMBED_LINKS: false,
-            READ_MESSAGE_HISTORY: false,
-        }, `Unclaiming ticket for ${msg.author.tag}`)
-        msg.channel.updateOverwrite(role, {
-            VIEW_CHANNEL: true,
-            SEND_MESSAGES: true,
-            READ_MESSAGES: true,
-            ATTACH_FILE: true,
-            EMBED_LINKS: true,
-            READ_MESSAGE_HISTORY: true,
-        }, `Unclaiming ticket for ${msg.author.tag}`)
+   //Remove a claim
+   unclaim({ msg, supportRole }) {
+       if (!msg) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
+       
+       if (!supportRole) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Role'))
 
-        const embed = new MessageEmbed()
-        .setColor('#2FDD2C')
-        .setDescription(`You have successfully unclaimed the ticket ${msg.channel}`)
+       let role = msg.guild.roles.cache.find(r => r.name === supportRole) || msg.guild.roles.cache.get(supportRole);
+       if (!role) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid role'));
+       
+       msg.channel.updateOverwrite(msg.author, {
+           VIEW_CHANNEL: false,
+           SEND_MESSAGES: false,
+           READ_MESSAGES: false,
+           ATTACH_FILE: false,
+           EMBED_LINKS: false,
+           READ_MESSAGE_HISTORY: false,
+       }, `Unclaiming ticket for ${msg.author.tag}`)
+       msg.channel.updateOverwrite(role, {
+           VIEW_CHANNEL: true,
+           SEND_MESSAGES: true,
+           READ_MESSAGES: true,
+           ATTACH_FILE: true,
+           EMBED_LINKS: true,
+           READ_MESSAGE_HISTORY: true,
+       }, `Unclaiming ticket for ${msg.author.tag}`)
 
-        msg.delete()
-        msg.channel.send(embed).catch(err => message.channel.send(`You have successfully unclaimed the ticket ${msg.channel}`))
-    }
+       const embed = new MessageEmbed()
+       .setColor('#2FDD2C')
+       .setDescription(`You have successfully unclaimed the ticket ${msg.channel}`)
 
-    //Rename a ticket
-    async rename({ msg, name }) {
-        if (!msg) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
-        if (!name) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Name'))
+       msg.delete()
+       msg.channel.send(embed).catch(err => message.channel.send(`You have successfully unclaimed the ticket ${msg.channel}`))
+   }
 
-        await msg.channel.setName(name, `Renaming ticket`)
+   //Rename a ticket
+   async rename({ msg, name }) {
+       if (!msg) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
+       if (!name) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Name'))
 
-        const embed = new MessageEmbed()
-        .setColor('#2FDD2C')
-        .setDescription(`You have successfully renamed the ticket to ${name}`)
+       await msg.channel.setName(name, `Renaming ticket`)
 
-        msg.delete()
-        msg.channel.send(embed).catch(err => message.channel.send(`You have successfully renamed the ticket to ${name}`))
-    }
+       const embed = new MessageEmbed()
+       .setColor('#2FDD2C')
+       .setDescription(`You have successfully renamed the ticket to ${name}`)
 
-    //Add a member to the ticket
-    add({ msg, user}) {
-        if (!msg) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
-        if (!user) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid User'))
+       msg.delete()
+       msg.channel.send(embed).catch(err => message.channel.send(`You have successfully renamed the ticket to ${name}`))
+   }
 
-        msg.channel.updateOverwrite(user, {
-            VIEW_CHANNEL: true,
-            SEND_MESSAGES: true,
-            READ_MESSAGES: true,
-            ATTACH_FILE: true,
-            EMBED_LINKS: true,
-            READ_MESSAGE_HISTORY: true,
-        }, `Adding ${user.user.tag} to ticket ${msg.channel.name}`)
+   //Add a member to the ticket
+   add({ msg, user}) {
+       if (!msg) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
+       if (!user) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid User'))
 
-        const embed = new MessageEmbed()
-        .setColor('#2FDD2C')
-        .setDescription(`You have successfully added ${user} to ticket ${msg.channel.name}`)
+       msg.channel.updateOverwrite(user, {
+           VIEW_CHANNEL: true,
+           SEND_MESSAGES: true,
+           READ_MESSAGES: true,
+           ATTACH_FILE: true,
+           EMBED_LINKS: true,
+           READ_MESSAGE_HISTORY: true,
+       }, `Adding ${user.user.tag} to ticket ${msg.channel.name}`)
 
-        msg.delete()
-        msg.channel.send(embed).catch(err => message.channel.send(`You have successfully added ${user} to ticket ${msg.channel.name}`))
-    }
+       const embed = new MessageEmbed()
+       .setColor('#2FDD2C')
+       .setDescription(`You have successfully added ${user} to ticket ${msg.channel.name}`)
 
-    //Remove a member from the ticket
-    remove({ msg, user}) {
-        if (!msg) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
-        if (!user) console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid User'))
+       msg.delete()
+       msg.channel.send(embed).catch(err => message.channel.send(`You have successfully added ${user} to ticket ${msg.channel.name}`))
+   }
 
-        msg.channel.updateOverwrite(user, {
-            VIEW_CHANNEL: false,
-            SEND_MESSAGES: false,
-            READ_MESSAGES: false,
-            ATTACH_FILE: false,
-            EMBED_LINKS: false,
-            READ_MESSAGE_HISTORY: false,
-        }, `Removing ${user.user.tag} from ticket ${msg.channel.name}`)
+   //Remove a member from the ticket
+   remove({ msg, user }) {
+       if (!msg)
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
+       if (!user) 
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid User'))
 
-        const embed = new MessageEmbed()
-        .setColor('#2FDD2C')
-        .setDescription(`You have successfully removed ${user} from ticket ${msg.channel.name}`)
+       msg.channel.updateOverwrite(user, {
+           VIEW_CHANNEL: false,
+           SEND_MESSAGES: false,
+           READ_MESSAGES: false,
+           ATTACH_FILE: false,
+           EMBED_LINKS: false,
+           READ_MESSAGE_HISTORY: false,
+       }, `Removing ${user.user.tag} from ticket ${msg.channel.name}`)
 
-        msg.delete()
-        msg.channel.send(embed).catch(err => message.channel.send(`You have successfully removed ${user} from ticket ${msg.channel.name}`))
-    }
- }
+       const embed = new MessageEmbed()
+       .setColor('#2FDD2C')
+       .setDescription(`You have successfully removed ${user} from ticket ${msg.channel.name}`)
 
- module.exports = CDTickets;
+       msg.delete()
+       msg.channel.send(embed).catch(err => message.channel.send(`You have successfully removed ${user} from ticket ${msg.channel.name}`))
+   }
+}
+
+module.exports = CDTickets;
