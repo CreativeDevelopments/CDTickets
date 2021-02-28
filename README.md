@@ -28,7 +28,7 @@
 
 # Installation
 ```
-npm i cdcommands --save
+npm i cdtickets --save
 ```
 
 # Setup
