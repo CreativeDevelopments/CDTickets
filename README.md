@@ -17,7 +17,6 @@
 - [Setup](#setup)
     - [Creating a new ticket](#create-a-ticket)
     - [Deleting a ticket](#delete-a-ticket)
-    - [Claim a ticket](#claim-a-ticket)
     - [Unclaim a ticket](#unclaim-a-ticket)
     - [Rename a ticket](#rename-a-ticket)
     - [Add a member](#add-a-member-to-a-ticket)
@@ -43,7 +42,7 @@ const ticket = new CDTickets()
 ticket.create({
     msg: message,
     name: 'Ticket Name', // Defaults to the ticket owners username
-    supportRole: 'Role', // message.mentions.roles.first() || message.guild.cache.roles.get(args[argNumber])
+    supportRole: 'Role', // Role Name or ID
     category: 'Category ID', // If no category is set it will just make a channel at the top of the server
     response: 'Response', // This message is sent when they open the ticket - Defaults to "Your ticket has successfully been created in #channel
     reason: 'Reason for opening the ticket', // Defaults to "No reason provided"
@@ -62,7 +61,7 @@ ticket.delete({
 ```js
 ticket.claim({
     msg: message,
-    supportRole: 'Role' // message.mentions.roles.first() || message.guild.cache.roles.get(args[argNumber])
+    supportRole: 'Role' // Role Name or ID
 })
 ```
 
@@ -70,7 +69,7 @@ ticket.claim({
 ```js
 ticket.unclaim({
     msg: message,
-    supportRole: 'Role', // message.mentions.roles.first() || message.guild.cache.roles.get(args[argNumber])
+    supportRole: 'Role', // Role Name or ID
 })
 ```
 
