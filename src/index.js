@@ -85,7 +85,7 @@ class CDTickets {
    }
 
    //Claim a ticket
-   claim({ msg, supportRole }) {
+   async claim({ msg, supportRole }) {
        if (!msg) 
            return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
        
@@ -96,22 +96,18 @@ class CDTickets {
        if (!role) 
            return console.log(`${colors.brightRED('[ERROR]')}`.white + colors.white(' Invalid role'));
 
-       msg.channel.updateOverwrite(role, {
-           VIEW_CHANNEL: false,
-           SEND_MESSAGES: false,
-           READ_MESSAGES: false,
-           ATTACH_FILE: false,
-           EMBED_LINKS: false,
-           READ_MESSAGE_HISTORY: false,
-       }, `Claiming ticket for ${msg.author.tag}`)
-       msg.channel.updateOverwrite(msg.author, {
-           VIEW_CHANNEL: true,
-           SEND_MESSAGES: true,
-           READ_MESSAGES: true,
-           ATTACH_FILE: true,
-           EMBED_LINKS: true,
-           READ_MESSAGE_HISTORY: true,
-       }, `Claiming ticket for ${msg.author.tag}`)
+        await msg.channel.overwritePermissions([
+            {
+                id: msg.author,
+                allow: 117760
+            }, {
+                id: role,
+                deny: 1024
+            }, {
+                id: msg.guild.id,
+                deny: 1024
+            }
+        ], `Claiming ticket for ${msg.author.tag}`)
 
        const embed = new MessageEmbed()
        .setColor('#2FDD2C')
@@ -122,7 +118,7 @@ class CDTickets {
    }
 
    //Remove a claim
-   unclaim({ msg, supportRole }) {
+   async unclaim({ msg, supportRole }) {
        if (!msg) 
            return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
        
@@ -132,24 +128,19 @@ class CDTickets {
        let role = msg.guild.roles.cache.find(r => r.name === supportRole) || msg.guild.roles.cache.get(supportRole);
        if (!role) 
            return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid role'));
-       
-       msg.channel.updateOverwrite(msg.author, {
-           VIEW_CHANNEL: false,
-           SEND_MESSAGES: false,
-           READ_MESSAGES: false,
-           ATTACH_FILE: false,
-           EMBED_LINKS: false,
-           READ_MESSAGE_HISTORY: false,
-       }, `Unclaiming ticket for ${msg.author.tag}`)
-       msg.channel.updateOverwrite(role, {
-           VIEW_CHANNEL: true,
-           SEND_MESSAGES: true,
-           READ_MESSAGES: true,
-           ATTACH_FILE: true,
-           EMBED_LINKS: true,
-           READ_MESSAGE_HISTORY: true,
-       }, `Unclaiming ticket for ${msg.author.tag}`)
 
+        await msg.channel.overwritePermissions([
+            {
+                id: msg.author
+            }, {
+                id: role,
+                allow: 11760,
+            }, {
+                id: msg.guild.id,
+                deny: 1024
+            }
+        ], `Unclaiming ticket for ${msg.author.tag}`)
+       
        const embed = new MessageEmbed()
        .setColor('#2FDD2C')
        .setDescription(`You have successfully unclaimed the ticket ${msg.channel}`)
@@ -176,13 +167,13 @@ class CDTickets {
    }
 
    //Add a member to the ticket
-   add({ msg, user}) {
+   async add({ msg, user}) {
        if (!msg) 
            return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
        if (!user) 
-           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid User'))
+           return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid User ID'))
 
-       msg.channel.updateOverwrite(user, {
+       await msg.channel.updateOverwrite(user, {
            VIEW_CHANNEL: true,
            SEND_MESSAGES: true,
            READ_MESSAGES: true,
@@ -200,19 +191,15 @@ class CDTickets {
    }
 
    //Remove a member from the ticket
-   remove({ msg, user }) {
+   async remove({ msg, user }) {
        if (!msg)
            return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid Message'))
        if (!user) 
            return console.log(`${colors.brightRed('[ERROR]')}`.white + colors.white(' Invalid User'))
 
-       msg.channel.updateOverwrite(user, {
+       await msg.channel.updateOverwrite(user, {
            VIEW_CHANNEL: false,
-           SEND_MESSAGES: false,
            READ_MESSAGES: false,
-           ATTACH_FILE: false,
-           EMBED_LINKS: false,
-           READ_MESSAGE_HISTORY: false,
        }, `Removing ${user.user.tag} from ticket ${msg.channel.name}`)
 
        const embed = new MessageEmbed()
