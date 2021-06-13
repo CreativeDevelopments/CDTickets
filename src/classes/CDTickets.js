@@ -1,4 +1,4 @@
-const log = require("../utils/log");
+const { log, embed } = require("../utils/functions");
 
 class CDTickets {
     /**
