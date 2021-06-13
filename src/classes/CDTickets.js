@@ -1,5 +1,4 @@
 const log = require("../utils/log");
-const { Client } = require("discord.js");
 
 class CDTickets {
     /**
@@ -7,20 +6,38 @@ class CDTickets {
      * @type {import("discord.js").Client}
      */
     _client;
-
     /**
      * @private
      * @type {boolean}
      */
     _embeds;
+    /**
+     * 
+     * @private
+     * @type {object}
+     */
+    _colors;
 
     /**
      * @param {import("discord.js").Client} client - Your Discord.js Client
-     * @param {boolean} embeds - Whether or not to use embeds in responses or not
+     * @param {boolean?} embeds - Whether or not to use embeds in responses or not
+     * @param {object?} colors - What colors to use in the different type of embeds
+     * @param {string?} [colors.error] - What color to use for an error embed, defaults to #C93131
+     * @param {string?} [colors.success] - What color to use for an success embed, defaults to #2FDD2C
+     * @param {string?} [colors.info] - What color to use for an info embed, defaults to #00DCFF
      */
-    constructor(client, embeds) {
+    constructor(
+        client,
+        embeds = true,
+        colors = {
+            error = "#C93131",
+            success = "#2FDD2C",
+            info = "#00DCFF"
+        }
+    ) {
         this._client = client;
         this._embeds = embeds;
+        this._colors = colors;
     }
 
     /**
@@ -166,3 +183,5 @@ class CDTickets {
 
     }
 }
+
+module.exports = CDTickets;
